@@ -43,7 +43,7 @@ void processShape(TopoDS_Shape& shape) {
 
 		TopoDS_Vertex vertex = TopoDS::Vertex(ex.Current());
 		gp_Pnt point = BRep_Tool::Pnt(vertex);
-		cout << "Vertex " << counter << ": X: " << point.X() << " - Y:" << point.Y() << " - Z: " << point.Z() << std::endl;
+		//cout << "Vertex " << counter << ": X: " << point.X() << " - Y:" << point.Y() << " - Z: " << point.Z() << std::endl;
 	}
 	std::cout << "STEP: Load vertex: " << counter << std::endl;
 
@@ -389,6 +389,12 @@ int main(int , char **) {
 		<< "readIges:" << std::endl;
 
 	readIges();
+
+	std::cout << std::endl
+		<< "---------" << std::endl
+		<< "readStep:" << std::endl;
+
+	readStep();
 
 	// Wait for key press
 	std::cout << std::endl

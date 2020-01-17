@@ -90,10 +90,6 @@ int convertShapeToMesh(const std::string& filename, std::unique_ptr<XSControl_Re
         return 1;
     }
 
-    IFSelect_PrintCount mode = IFSelect_ListByItem;
-    std::cout << "reader.PrintCheckLoad(false, mode)" << std::endl;
-    reader->PrintCheckLoad(false, mode);
-
     reader->NbRootsForTransfer(); //Transfer whole file
     reader->TransferRoots();
     TopoDS_Shape shape = reader->OneShape();

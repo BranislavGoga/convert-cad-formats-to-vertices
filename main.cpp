@@ -87,7 +87,9 @@ int readStep(const std::string& filename) {
     reader.TransferRoots();
     TopoDS_Shape shape = reader.OneShape();
 
-	processShape(shape, std::cout, std::cout);
+	std::string	outputVerticesFilename = filename + ".vertices";
+	std::ofstream outputVerticesStream(outputVerticesFilename);
+	processShape(shape, std::cout, outputVerticesStream);
 
     return 0;
 }
@@ -102,9 +104,11 @@ int readIges(const std::string& filename) {
 
 	Standard_Integer NbRoots = reader.NbRootsForTransfer(); //Transfer whole file
 	Standard_Integer NbTrans = reader.TransferRoots();
-	TopoDS_Shape result = reader.OneShape();
+	TopoDS_Shape shape = reader.OneShape();
 
-	processShape(result, std::cout, std::cout);
+	std::string	outputVerticesFilename = filename + ".vertices";
+	std::ofstream outputVerticesStream(outputVerticesFilename);
+	processShape(shape, std::cout, outputVerticesStream);
 
 	return 0;
 }

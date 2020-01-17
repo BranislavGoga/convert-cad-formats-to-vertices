@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <memory>
 
 #include <STEPControl_Reader.hxx>
 #include <IGESControl_Reader.hxx>
@@ -73,9 +74,16 @@ void printShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::ostr
 	totalsOutputStream << "STEP: Load shell: " << counter << std::endl;
 }
 
-int convertStepToMesh(const std::string& filename) {
-    STEPControl_Reader reader;
-    IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
+std::unique_ptr<XSControl_Reader> createStepReader() {
+	return std::make_unique<STEPControl_Reader>();
+}
+
+std::unique_ptr<XSControl_Reader> createIgesReader() {
+	return std::make_unique<IGESControl_Reader>();
+}
+
+int convertShapeToMesh(const std::string& filename, std::unique_ptr<XSControl_Reader> reader) {
+    IFSelect_ReturnStatus stat = reader->ReadFile(filename.c_str());
     if (stat != IFSelect_RetDone) {
         std::cout << "Error reading file '" << filename << "'" << std::endl;
         return 1;
@@ -83,11 +91,11 @@ int convertStepToMesh(const std::string& filename) {
 
     IFSelect_PrintCount mode = IFSelect_ListByItem;
     std::cout << "reader.PrintCheckLoad(false, mode)" << std::endl;
-    reader.PrintCheckLoad(false, mode);
+    reader->PrintCheckLoad(false, mode);
 
-    reader.NbRootsForTransfer(); //Transfer whole file
-    reader.TransferRoots();
-    TopoDS_Shape shape = reader.OneShape();
+    reader->NbRootsForTransfer(); //Transfer whole file
+    reader->TransferRoots();
+    TopoDS_Shape shape = reader->OneShape();
 
 	tesselateShape(shape);
 
@@ -98,47 +106,24 @@ int convertStepToMesh(const std::string& filename) {
     return 0;
 }
 
-int convertIgesToMesh(const std::string& filename) {
-	IGESControl_Reader reader;
-	IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
-	if (stat != IFSelect_RetDone) {
-		std::cout << "Error reading file '" << filename << "'" << std::endl;
-		return 1;
-	}
-
-	IFSelect_PrintCount mode = IFSelect_ListByItem;
-	std::cout << "reader.PrintCheckLoad(false, mode)" << std::endl;
-	reader.PrintCheckLoad(false, mode);
-
-	reader.NbRootsForTransfer(); //Transfer whole file
-	reader.TransferRoots();
-	TopoDS_Shape shape = reader.OneShape();
-
-	tesselateShape(shape);
-
-	std::string	outputVerticesFilename = filename + ".vertices";
-	std::ofstream outputVerticesStream(outputVerticesFilename);
-	printShape(shape, std::cout, outputVerticesStream);
-
-	return 0;
-}
-
 int main(int , char **) {
 
 	std::cout << std::endl
 		<< "---------" << std::endl
 		<< "readIges:" << std::endl;
 
-	convertIgesToMesh(
-		igesFileName
+	convertShapeToMesh(
+		igesFileName,
+		createIgesReader()
 		);
 
 	std::cout << std::endl
 		<< "---------" << std::endl
 		<< "readStep:" << std::endl;
 
-	convertStepToMesh(
-		stepFileName
+	convertShapeToMesh(
+		stepFileName,
+		createStepReader()
 		);
 
 	// Wait for key press

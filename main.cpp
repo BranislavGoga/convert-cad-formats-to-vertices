@@ -79,13 +79,12 @@ XSControl_Reader	createStepReader()
 	return STEPControl_Reader();
 }
 
-TopoDS_Shape readStep(const std::string& filename) {
+TopoDS_Shape readStep() {
     XSControl_Reader reader = createStepReader();
-    IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
+    IFSelect_ReturnStatus stat = reader.ReadFile(stepFileName.c_str());
     if (stat != IFSelect_RetDone) {
         std::cout << "Error reading file" << std::endl;
-		std::string message = "Unable to read file '" + filename + "'";
-		throw std::exception(message.c_str());
+		throw std::exception("Unable to read .step file.");
     }
 
     reader.NbRootsForTransfer(); //Transfer whole file
@@ -98,14 +97,9 @@ XSControl_Reader	createIgesReader()
 	return IGESControl_Reader();
 }
 
-TopoDS_Shape readIges(const std::string& filename) {
+TopoDS_Shape readIges() {
 	XSControl_Reader reader = createIgesReader();
-	IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
-	if (stat != IFSelect_RetDone) {
-		std::cout << "Error reading file" << std::endl;
-		std::string message = "Unable to read file '" + filename + "'";
-		throw std::exception(message.c_str());
-	}
+	IFSelect_ReturnStatus stat = reader.ReadFile(igesFileName.c_str());
 
 	reader.NbRootsForTransfer(); //Transfer whole file
 	reader.TransferRoots();
@@ -114,13 +108,11 @@ TopoDS_Shape readIges(const std::string& filename) {
 
 int main(int , char **) {
 
-	std::cout << "Loading file '" << stepFileName << "'";
-	TopoDS_Shape stepShape = readStep(stepFileName);
+	TopoDS_Shape stepShape = readStep();
 	tesselateShape(stepShape);
 	printShape(stepShape, std::cout);
 
-	std::cout << "Loading file '" << igesFileName << "'";
-	TopoDS_Shape igesShape = readIges(igesFileName);
+	TopoDS_Shape igesShape = readIges();
 	tesselateShape(igesShape);
 	printShape(igesShape, std::cout);
 

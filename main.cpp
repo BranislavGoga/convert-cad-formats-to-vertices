@@ -71,9 +71,9 @@ void processShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::os
 	totalsOutputStream << "STEP: Load shell: " << counter << std::endl;
 }
 
-int readStep() {
+int readStep(const std::string& filename) {
     STEPControl_Reader reader;
-    IFSelect_ReturnStatus stat = reader.ReadFile(stepFileName.c_str());
+    IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
     if (stat != IFSelect_RetDone) {
         std::cout << "Error reading file" << std::endl;
         return 1;
@@ -92,9 +92,9 @@ int readStep() {
     return 0;
 }
 
-int readIges() {
+int readIges(const std::string& filename) {
 	IGESControl_Reader reader;
-	IFSelect_ReturnStatus stat = reader.ReadFile(igesFileName.c_str());
+	IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
 
 	IFSelect_PrintCount mode = IFSelect_ListByItem;
 	std::cout << "reader.PrintCheckLoad(false, mode)" << std::endl;
@@ -115,13 +115,17 @@ int main(int , char **) {
 		<< "---------" << std::endl
 		<< "readIges:" << std::endl;
 
-	readIges();
+	readIges(
+		igesFileName
+		);
 
 	std::cout << std::endl
 		<< "---------" << std::endl
 		<< "readStep:" << std::endl;
 
-	readStep();
+	readStep(
+		stepFileName
+		);
 
 	// Wait for key press
 	std::cout << std::endl

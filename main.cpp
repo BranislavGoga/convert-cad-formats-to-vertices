@@ -29,9 +29,11 @@ const std::string dataDirectory = "c:\\Source\\ModelConverter\\src\\data\\";
 const std::string stepFileName = dataDirectory + "impeller.STEP";
 const std::string igesFileName = dataDirectory + "impeller.IGS";
 
-void processShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::ostream& vertexOutputStream) {
-
+void tesselateShape(TopoDS_Shape& shape) {
 	BRepMesh_IncrementalMesh(shape, 0.1, Standard_True);
+}
+
+void printShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::ostream& vertexOutputStream) {
 
 	unsigned counter = 0;
 	TopExp_Explorer ex;
@@ -87,9 +89,11 @@ int readStep(const std::string& filename) {
     reader.TransferRoots();
     TopoDS_Shape shape = reader.OneShape();
 
+	tesselateShape(shape);
+
 	std::string	outputVerticesFilename = filename + ".vertices";
 	std::ofstream outputVerticesStream(outputVerticesFilename);
-	processShape(shape, std::cout, outputVerticesStream);
+	printShape(shape, std::cout, outputVerticesStream);
 
     return 0;
 }
@@ -110,9 +114,11 @@ int readIges(const std::string& filename) {
 	reader.TransferRoots();
 	TopoDS_Shape shape = reader.OneShape();
 
+	tesselateShape(shape);
+
 	std::string	outputVerticesFilename = filename + ".vertices";
 	std::ofstream outputVerticesStream(outputVerticesFilename);
-	processShape(shape, std::cout, outputVerticesStream);
+	printShape(shape, std::cout, outputVerticesStream);
 
 	return 0;
 }

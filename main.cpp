@@ -75,7 +75,7 @@ int readStep(const std::string& filename) {
     STEPControl_Reader reader;
     IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
     if (stat != IFSelect_RetDone) {
-        std::cout << "Error reading file" << std::endl;
+        std::cout << "Error reading file '" << filename << "'" << std::endl;
         return 1;
     }
 
@@ -97,13 +97,17 @@ int readStep(const std::string& filename) {
 int readIges(const std::string& filename) {
 	IGESControl_Reader reader;
 	IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
+	if (stat != IFSelect_RetDone) {
+		std::cout << "Error reading file '" << filename << "'" << std::endl;
+		return 1;
+	}
 
 	IFSelect_PrintCount mode = IFSelect_ListByItem;
 	std::cout << "reader.PrintCheckLoad(false, mode)" << std::endl;
 	reader.PrintCheckLoad(false, mode);
 
-	Standard_Integer NbRoots = reader.NbRootsForTransfer(); //Transfer whole file
-	Standard_Integer NbTrans = reader.TransferRoots();
+	reader.NbRootsForTransfer(); //Transfer whole file
+	reader.TransferRoots();
 	TopoDS_Shape shape = reader.OneShape();
 
 	std::string	outputVerticesFilename = filename + ".vertices";

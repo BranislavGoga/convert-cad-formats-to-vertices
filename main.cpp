@@ -31,7 +31,8 @@ const std::string stepFileName = dataDirectory + "impeller.STEP";
 const std::string igesFileName = dataDirectory + "impeller.IGS";
 
 void tesselateShape(TopoDS_Shape& shape) {
-	BRepMesh_IncrementalMesh(shape, 0.1, Standard_True);
+	double deflection = 0.1;
+	BRepMesh_IncrementalMesh(shape, deflection);
 }
 
 void printShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::ostream& vertexOutputStream) {

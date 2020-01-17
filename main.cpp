@@ -73,7 +73,7 @@ void printShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::ostr
 	totalsOutputStream << "STEP: Load shell: " << counter << std::endl;
 }
 
-int readStep(const std::string& filename) {
+int convertStepToMesh(const std::string& filename) {
     STEPControl_Reader reader;
     IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
     if (stat != IFSelect_RetDone) {
@@ -98,7 +98,7 @@ int readStep(const std::string& filename) {
     return 0;
 }
 
-int readIges(const std::string& filename) {
+int convertIgesToMesh(const std::string& filename) {
 	IGESControl_Reader reader;
 	IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
 	if (stat != IFSelect_RetDone) {
@@ -129,7 +129,7 @@ int main(int , char **) {
 		<< "---------" << std::endl
 		<< "readIges:" << std::endl;
 
-	readIges(
+	convertIgesToMesh(
 		igesFileName
 		);
 
@@ -137,7 +137,7 @@ int main(int , char **) {
 		<< "---------" << std::endl
 		<< "readStep:" << std::endl;
 
-	readStep(
+	convertStepToMesh(
 		stepFileName
 		);
 

@@ -1,6 +1,6 @@
 # Covert STEP and IGES file formats to vertex mesh
 
-Example conversion of STEP and IGES file formats to list of vertices.
+Example conversion of STEP and IGES file formats to list of vertices using the OpenCascade Community edition library.
 
 # Build
 

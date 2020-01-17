@@ -90,7 +90,6 @@ int convertShapeToMesh(const std::string& filename, std::unique_ptr<XSControl_Re
         return 1;
     }
 
-    reader->NbRootsForTransfer(); //Transfer whole file
     reader->TransferRoots();
     TopoDS_Shape shape = reader->OneShape();
 

@@ -29,7 +29,7 @@ const std::string dataDirectory = "c:\\Source\\ModelConverter\\src\\data\\";
 const std::string stepFileName = dataDirectory + "impeller.STEP";
 const std::string igesFileName = dataDirectory + "impeller.IGS";
 
-void processShape(TopoDS_Shape& shape) {
+void processShape(TopoDS_Shape& shape, std::ostream& totalsOutputStream, std::ostream& vertexOutputStream) {
 
 	BRepMesh_IncrementalMesh(shape, 0.1, Standard_True);
 
@@ -42,33 +42,33 @@ void processShape(TopoDS_Shape& shape) {
 
 		TopoDS_Vertex vertex = TopoDS::Vertex(ex.Current());
 		gp_Pnt point = BRep_Tool::Pnt(vertex);
-		//cout << "Vertex " << counter << ": X: " << point.X() << " - Y:" << point.Y() << " - Z: " << point.Z() << std::endl;
+		vertexOutputStream << "Vertex " << counter << ": X: " << point.X() << " - Y:" << point.Y() << " - Z: " << point.Z() << std::endl;
 	}
-	std::cout << "STEP: Load vertex: " << counter << std::endl;
+	totalsOutputStream << "STEP: Load vertex: " << counter << std::endl;
 
 	counter = 0;
 	for (ex.Init(shape, TopAbs_FACE); ex.More(); ex.Next()) {
 		++counter;
 	}
-	std::cout << "STEP: Load face: " << counter << std::endl;
+	totalsOutputStream << "STEP: Load face: " << counter << std::endl;
 
 	counter = 0;
 	for (ex.Init(shape, TopAbs_EDGE); ex.More(); ex.Next()) {
 		++counter;
 	}
-	std::cout << "STEP: Load edge: " << counter << std::endl;
+	totalsOutputStream << "STEP: Load edge: " << counter << std::endl;
 
 	counter = 0;
 	for (ex.Init(shape, TopAbs_SOLID); ex.More(); ex.Next()) {
 		++counter;
 	}
-	std::cout << "STEP: Load solid: " << counter << std::endl;
+	totalsOutputStream << "STEP: Load solid: " << counter << std::endl;
 
 	counter = 0;
 	for (ex.Init(shape, TopAbs_SHELL); ex.More(); ex.Next()) {
 		++counter;
 	}
-	std::cout << "STEP: Load shell: " << counter << std::endl;
+	totalsOutputStream << "STEP: Load shell: " << counter << std::endl;
 }
 
 int readStep() {
@@ -87,7 +87,7 @@ int readStep() {
     reader.TransferRoots();
     TopoDS_Shape shape = reader.OneShape();
 
-	processShape(shape);
+	processShape(shape, std::cout, std::cout);
 
     return 0;
 }
@@ -104,7 +104,7 @@ int readIges() {
 	Standard_Integer NbTrans = reader.TransferRoots();
 	TopoDS_Shape result = reader.OneShape();
 
-	processShape(result);
+	processShape(result, std::cout, std::cout);
 
 	return 0;
 }

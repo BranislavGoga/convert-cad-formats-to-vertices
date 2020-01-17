@@ -24,7 +24,6 @@
 #include <BRep_Builder.hxx>
 #include <Quantity_Color.hxx>
 
-
 const std::string dataDirectory = "c:\\Source\\ModelConverter\\src\\data\\";
 const std::string stepFileName = dataDirectory + "impeller.STEP";
 const std::string igesFileName = dataDirectory + "impeller.IGS";
@@ -79,30 +78,14 @@ XSControl_Reader	createStepReader()
 	return STEPControl_Reader();
 }
 
-TopoDS_Shape readStep(const std::string& filename) {
-    XSControl_Reader reader = createStepReader();
-    IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
-    if (stat != IFSelect_RetDone) {
-        std::cout << "Error reading file" << std::endl;
-		std::string message = "Unable to read file '" + filename + "'";
-		throw std::exception(message.c_str());
-    }
-
-    reader.NbRootsForTransfer(); //Transfer whole file
-    reader.TransferRoots();
-    return reader.OneShape();
-}
-
 XSControl_Reader	createIgesReader()
 {
 	return IGESControl_Reader();
 }
 
-TopoDS_Shape readIges(const std::string& filename) {
-	XSControl_Reader reader = createIgesReader();
+TopoDS_Shape readShape(const std::string& filename, XSControl_Reader& reader) {
 	IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str());
 	if (stat != IFSelect_RetDone) {
-		std::cout << "Error reading file" << std::endl;
 		std::string message = "Unable to read file '" + filename + "'";
 		throw std::exception(message.c_str());
 	}
@@ -112,17 +95,26 @@ TopoDS_Shape readIges(const std::string& filename) {
 	return reader.OneShape();
 }
 
+void convertShapeToMesh(const std::string& filename, XSControl_Reader& reader) {
+	std::cout << std::endl << 
+		"Loading file '" << filename << "' ..." << std::endl;
+
+	TopoDS_Shape shape = readShape(filename, reader);
+	tesselateShape(shape);
+	{
+		const std::string	outputFilename = filename + ".vertices";
+
+		std::cout << "Writing loaded vertices to '" << outputFilename << "' ..." << std::endl;
+
+		std::ofstream	stepOutputStream(outputFilename);
+		printShape(shape, stepOutputStream);
+	}
+}
+
 int main(int , char **) {
 
-	std::cout << "Loading file '" << stepFileName << "'";
-	TopoDS_Shape stepShape = readStep(stepFileName);
-	tesselateShape(stepShape);
-	printShape(stepShape, std::cout);
-
-	std::cout << "Loading file '" << igesFileName << "'";
-	TopoDS_Shape igesShape = readIges(igesFileName);
-	tesselateShape(igesShape);
-	printShape(igesShape, std::cout);
+	convertShapeToMesh(stepFileName, createStepReader());
+	convertShapeToMesh(igesFileName, createIgesReader());
 
 	// Wait for key press
 	std::cout << std::endl

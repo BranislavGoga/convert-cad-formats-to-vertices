@@ -17,14 +17,12 @@
 #include <TDF_Label.hxx>
 #include <TDataStd_Name.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <VrmlData_Scene.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS.hxx>
 #include <BRep_Builder.hxx>
 #include <Quantity_Color.hxx>
-
 
 const std::string dataDirectory = "c:\\Source\\ModelConverter\\src\\data\\";
 const std::string stepFileName = dataDirectory + "impeller.STEP";

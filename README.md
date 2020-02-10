@@ -5,6 +5,7 @@ Example conversion of STEP and IGES file formats to list of vertices using the O
 
 # Build
 
+0. Build the OpenCascade package (https://github.com/BranislavGoga/OpenCascade) using Conan if yu do not have it in you local Conan repository. Follow the instructions in the repository GitHub.
 1. Clone the repository.
 2. Run the CMake, configure the build.
 3. Change directory to the CMake`s build directory.

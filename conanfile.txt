@@ -1,6 +1,5 @@
 [requires]
-OpenCascade/0.18.3
+OCE/0.18.3
 
 [generators]
-cmake_find_package
 cmake_paths
